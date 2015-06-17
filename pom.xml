@@ -21,16 +21,12 @@
     <properties>
         <java.version>1.7</java.version>
         <main.basedir>${basedir}</main.basedir>
-        <passphrase>${gpg.passphrase}</passphrase>
 
         <spring-boot.version>1.2.4.RELEASE</spring-boot.version>
         <hazelcast.version>3.3.3</hazelcast.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <spring-cloud.version>1.0.1.RELEASE</spring-cloud.version>
 
-        <build-plugin.jacoco.version>0.7.3.201502191951</build-plugin.jacoco.version>
-        <build-plugin.coveralls.version>3.0.1</build-plugin.coveralls.version>
-        <build-plugin.gpg.version>1.5</build-plugin.gpg.version>
     </properties>
 
     <modules>
@@ -80,7 +76,7 @@
                     <execution>
                         <id>attach-sources</id>
                         <goals>
-                            <goal>jar-no-fork</goal>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -88,110 +84,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <configuration>
+                    <show>private</show>
+                    <nohelp>true</nohelp>
+                </configuration>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${build-plugin.gpg.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
-    <profiles>
-        <profile>
-            <id>sign-artifacts</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <configuration>
-                            <passphrase>${passphrase}</passphrase>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>travis</id>
-            <activation>
-                <property>
-                    <name>env.TRAVIS</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${build-plugin.jacoco.version}</version>
-                        <executions>
-                            <!-- Prepares the property pointing to the JaCoCo
-                            runtime agent which is passed as VM argument when Maven the Surefire plugin
-                            is executed. -->
-                            <execution>
-                                <id>pre-unit-test</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-
-                            <!-- Ensures that the code coverage report for
-                            unit tests is created after unit tests have been run. -->
-                            <execution>
-                                <id>post-unit-test</id>
-                                <phase>test</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.eluder.coveralls</groupId>
-                        <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>${build-plugin.coveralls.version}</version>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
         <repository>
-            <id>sonatype-nexus-staging</id>
+            <id>releases</id>
             <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>http://192.168.1.141:8081/nexus/content/repositories/releases/</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://192.168.1.141:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <dependencyManagement>

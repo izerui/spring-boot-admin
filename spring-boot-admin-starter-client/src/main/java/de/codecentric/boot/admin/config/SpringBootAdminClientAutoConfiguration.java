@@ -20,6 +20,7 @@ import java.util.Arrays;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,7 @@ import de.codecentric.boot.admin.web.BasicAuthHttpRequestInterceptor;
  * application is registered at the spring-boot-admin application. If not, it registers itself.
  */
 @Configuration
+@ConditionalOnWebApplication
 @ConditionalOnProperty("spring.boot.admin.url")
 @EnableConfigurationProperties({ AdminProperties.class, AdminClientProperties.class })
 public class SpringBootAdminClientAutoConfiguration {
